@@ -1,0 +1,22 @@
+{
+    "query": {
+        "keywords": "",
+        "exact": false,
+        "start": 3,
+        "limit": 1,
+        "type": "aws",
+        "order": "fileCount",
+        "direction": "asc"
+    },
+    "meta": {
+        "results": 325800
+    },
+    "buckets": [
+        {
+            "id": 102,
+            "bucket": "arassets.s3-ap-southeast-1.amazonaws.com",
+            "fileCount": 1,
+            "type": "aws"
+        }
+    ]
+}

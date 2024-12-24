@@ -1,0 +1,40 @@
+networks:
+  ingestor_network:
+    driver: bridge
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
+    networks:
+      - ingestor_network
+
+  ingestor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ingestor
+    depends_on:
+      - mongodb
+    environment:
+      - API_ENDPOINT=${API_ENDPOINT}
+      - API_CONTENT_TYPE=${API_CONTENT_TYPE}
+      - API_AUTHORIZATION_TOKEN=${API_AUTHORIZATION_TOKEN}
+      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${DATABASE_NAME}?authSource=admin
+      - DATABASE_NAME=${DATABASE_NAME}
+      - RETRY_COUNT=${RETRY_COUNT}
+      - WORKER_COUNT=${WORKER_COUNT}
+    restart: on-failure
+    networks:
+      - ingestor_network
+
+volumes:
+  mongo_data:
